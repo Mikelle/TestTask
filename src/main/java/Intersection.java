@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -7,8 +8,20 @@ import java.util.stream.Stream;
 
 public class Intersection {
 
-    private List<String> readFile(String fileName) {
+    public void findIntersectionInStrings(String fileName) {
+        String separator = File.separator;
+        String resourcesDirectory = "src" + separator + "main" + separator + "resources";
+        String absoluteFilePath = resourcesDirectory + separator + fileName;
 
+        List<String> listOfStrings = readFile(absoluteFilePath);
+
+        if (listOfStrings.size() > 1)
+            intersectionOfTwoStrings(listOfStrings.get(0), listOfStrings.get(1));
+        else
+            System.out.println("Amount of strings in file less than two.");
+    }
+
+    private List<String> readFile(String fileName) {
         List<String> listOfStrings = new ArrayList<>();
 
         try (Stream<String> stream = Files.lines(Paths.get(fileName))){
@@ -37,7 +50,6 @@ public class Intersection {
     }
 
     private void intersectionOfTwoStrings(String str1, String str2) {
-
         Map<Character, Integer> hashMap1 = new HashMap<>(Math.min(str1.length(), 255));
         Map<Character, Integer> hashMap2 = new HashMap<>(Math.min(str2.length(), 255));
 
