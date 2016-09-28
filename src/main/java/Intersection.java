@@ -2,7 +2,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -22,5 +24,25 @@ public class Intersection {
         }
 
         return listOfStrings;
+    }
+
+    private void initHashMap(Map<Character, Integer> hashMap, String str) {
+        for (char ch : str.toCharArray()) {
+            hashMap.put(ch, hashMap.getOrDefault(ch, 0) + 1);
+        }
+    }
+
+    private void intersectionOfTwoStrings(String str1, String str2) {
+
+        Map<Character, Integer> hashMap1 = new HashMap<>(Math.min(str1.length(), 255));
+        Map<Character, Integer> hashMap2 = new HashMap<>(Math.min(str2.length(), 255));
+
+        initHashMap(hashMap1, str1);
+        initHashMap(hashMap2, str2);
+
+        hashMap1.keySet().retainAll(hashMap2.keySet());
+
+        hashMap1.forEach((character, integer) ->
+                hashMap1.put(character, hashMap1.get(character) + hashMap2.get(character)));
     }
 }
