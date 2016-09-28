@@ -1,10 +1,7 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -32,6 +29,13 @@ public class Intersection {
         }
     }
 
+    private Map<Character, Integer> sortInDescendingOrder(Map<Character, Integer> hashMap) {
+        return hashMap.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue(Collections.reverseOrder()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+                        (e1, e2) -> e1, LinkedHashMap::new));
+    }
+
     private void intersectionOfTwoStrings(String str1, String str2) {
 
         Map<Character, Integer> hashMap1 = new HashMap<>(Math.min(str1.length(), 255));
@@ -40,9 +44,14 @@ public class Intersection {
         initHashMap(hashMap1, str1);
         initHashMap(hashMap2, str2);
 
+        // deleting from hashMap all not repeated symbols
         hashMap1.keySet().retainAll(hashMap2.keySet());
 
+        // sum up values from first and second hashMaps
         hashMap1.forEach((character, integer) ->
                 hashMap1.put(character, hashMap1.get(character) + hashMap2.get(character)));
+
+        Map<Character, Integer> sorted = sortInDescendingOrder(hashMap1);
+        System.out.println(sorted.keySet());
     }
 }
