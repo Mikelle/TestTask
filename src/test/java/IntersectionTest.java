@@ -13,9 +13,10 @@ public class IntersectionTest {
         System.setOut(new PrintStream(outputStream));
 
         Intersection intersection = new Intersection();
-        intersection.findIntersectionInStrings("test.txt");
+        intersection.findIntersectionInStringsInFile("test.txt");
 
-        String expected = "[a,  , m, p, !, я, 2, 4]\n";
+        String expected = OSUtils.isWindows() ? "[a,  , m, p, !, я, 2, 4]\r\n"
+                                                : "[a,  , m, p, !, я, 2, 4]\n";
         assertThat(outputStream.toString(), is(expected));
     }
 
@@ -25,9 +26,10 @@ public class IntersectionTest {
         System.setOut(new PrintStream(outputStream));
 
         Intersection intersection = new Intersection();
-        intersection.findIntersectionInStrings("emptyFile.txt");
+        intersection.findIntersectionInStringsInFile("emptyFile.txt");
 
-        String expected = "Amount of strings in file less than two.\n";
+        String expected = OSUtils.isWindows() ? "Amount of not empty strings in file less than two.\r\n"
+                : "Amount of not empty strings in file less than two.\n";
         assertThat(outputStream.toString(), is(expected));
     }
 }

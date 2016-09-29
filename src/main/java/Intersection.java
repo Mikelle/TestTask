@@ -1,4 +1,3 @@
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -8,17 +7,25 @@ import java.util.stream.Stream;
 
 public class Intersection {
 
-    public void findIntersectionInStrings(String fileName) {
-        String separator = File.separator;
-        String resourcesDirectory = "src" + separator + "main" + separator + "resources";
-        String absoluteFilePath = resourcesDirectory + separator + fileName;
+    public static void main(String[] args) {
+        Intersection intersection = new Intersection();
 
-        List<String> listOfStrings = readFile(absoluteFilePath);
+        String path = Paths.get("src", "main", "resources", "test.txt").toString();
 
-        if (listOfStrings.size() > 1)
-            intersectionOfTwoStrings(listOfStrings.get(0), listOfStrings.get(1));
+        if (args.length < 1)
+            intersection.findIntersectionInStringsInFile(path);
         else
-            System.out.println("Amount of strings in file less than two.");
+            intersection.findIntersectionInStringsInFile(args[0]);
+    }
+
+    public void findIntersectionInStringsInFile(String fileName) {
+        List<String> listOfStrings = readFile(fileName);
+
+        try {
+            intersectionOfTwoStrings(listOfStrings.get(0), listOfStrings.get(1));
+        } catch (IndexOutOfBoundsException e) {
+            System.err.println("Amount of not empty strings in file less than two. Please, give correct file");
+        }
     }
 
     private List<String> readFile(String fileName) {
@@ -30,7 +37,8 @@ public class Intersection {
                     .map(String::toLowerCase)
                     .collect(Collectors.toList());
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Can't find file. Please, specify correct name");
+            System.exit(0);
         }
 
         return listOfStrings;
@@ -61,7 +69,7 @@ public class Intersection {
 
         // sum up values from first and second hashMaps
         hashMap1.forEach((character, integer) ->
-                hashMap1.put(character, hashMap1.get(character) + hashMap2.get(character)));
+                hashMap1.put(character, integer + hashMap2.get(character)));
 
         Map<Character, Integer> sorted = sortInDescendingOrder(hashMap1);
         System.out.println(sorted.keySet());
