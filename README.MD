@@ -1,5 +1,5 @@
 Simple program for finding repeating symbols in two strings from file.
-How to create .jar file. Run in terminal in project folder:
+How to create .jar file: run those commands in terminal in project folder:
 
 1. gradle clean
 2. gradle fatJar
