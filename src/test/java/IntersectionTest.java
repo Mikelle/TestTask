@@ -1,35 +1,40 @@
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Paths;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 public class IntersectionTest {
+
     @Test
-    public void testIntersection() {
+    public void testIntersection() throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outputStream));
 
         Intersection intersection = new Intersection();
-        intersection.findIntersectionInStringsInFile("test.txt");
+        String path = Paths.get("src", "main", "resources", "test.txt").toString();
 
-        String expected = OSUtils.isWindows() ? "[a,  , m, p, !, я, 2, 4]\r\n"
-                                                : "[a,  , m, p, !, я, 2, 4]\n";
+        intersection.findIntersectionInStringsInFile(path);
+
+        String expected = String.format("[a,  , m, p, !, я, 2, 4]%n");
         assertThat(outputStream.toString(), is(expected));
     }
 
     @Test
-    public void testEmptyFile() {
+    public void testEmptyFile() throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outputStream));
 
         Intersection intersection = new Intersection();
-        intersection.findIntersectionInStringsInFile("emptyFile.txt");
+        String path = Paths.get("src", "main", "resources", "emptyFile.txt").toString();
 
-        String expected = OSUtils.isWindows() ? "Amount of not empty strings in file less than two.\r\n"
-                : "Amount of not empty strings in file less than two.\n";
+        intersection.findIntersectionInStringsInFile(path);
+
+        String expected = String.format("Amount of not empty strings in file less than two. Please, give correct file%n");
         assertThat(outputStream.toString(), is(expected));
     }
 }

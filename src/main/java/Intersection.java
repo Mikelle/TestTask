@@ -1,5 +1,7 @@
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -7,7 +9,7 @@ import java.util.stream.Stream;
 
 public class Intersection {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Intersection intersection = new Intersection();
 
         String path = Paths.get("src", "main", "resources", "test.txt").toString();
@@ -18,30 +20,33 @@ public class Intersection {
             intersection.findIntersectionInStringsInFile(args[0]);
     }
 
-    public void findIntersectionInStringsInFile(String fileName) {
+    public void findIntersectionInStringsInFile(String fileName) throws IOException {
         List<String> listOfStrings = readFile(fileName);
 
         try {
             intersectionOfTwoStrings(listOfStrings.get(0), listOfStrings.get(1));
         } catch (IndexOutOfBoundsException e) {
-            System.err.println("Amount of not empty strings in file less than two. Please, give correct file");
+            System.out.println("Amount of not empty strings in file less than two. Please, give correct file");
         }
     }
 
-    private List<String> readFile(String fileName) {
-        List<String> listOfStrings = new ArrayList<>();
+    private List<String> readFile(String fileName) throws IOException {
+        Path path = Paths.get(fileName);
 
-        try (Stream<String> stream = Files.lines(Paths.get(fileName))){
-            listOfStrings = stream
-                    .filter(line -> !line.isEmpty())
-                    .map(String::toLowerCase)
-                    .collect(Collectors.toList());
-        } catch (IOException e) {
-            System.err.println("Can't find file. Please, specify correct name");
-            System.exit(0);
+        if (!Files.exists(path)) {
+            throw new FileNotFoundException("File does not exist: " + fileName);
+        }
+        if (Files.isDirectory(path)) {
+            throw new IllegalArgumentException("Must not be a directory: " + fileName);
+        }
+        if (!Files.isReadable(path)) {
+            throw new IllegalArgumentException("File cannot be read" + fileName);
         }
 
-        return listOfStrings;
+        Stream<String> stream = Files.lines(path);
+        return stream.filter(line -> !line.isEmpty())
+                     .map(String::toLowerCase)
+                     .collect(Collectors.toList());
     }
 
     private void initHashMap(Map<Character, Integer> hashMap, String str) {
